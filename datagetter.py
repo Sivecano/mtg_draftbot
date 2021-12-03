@@ -9,7 +9,9 @@ l = []
 while more:
     with requests.get(url) as req:
         raw = json.loads(req.text)
-    more = raw["has_more"]
+    print(raw.keys())
+    if (more := raw["has_more"]):
+        url = raw["next_page"]
     for i in raw["data"]:
         l.append({  "uuid"  :   i["oracle_id"], 
                     "set"   :   i["set"],
@@ -20,14 +22,13 @@ while more:
                     "name"  :   i["name"],
                     "type"  :   i["type_line"]
             })
-    url = raw["next_page"]
 
 
 data = pandas.DataFrame(l)
 
 print(data)
 
-data.to_json("set.json")
+data.to_csv("set.csv")
 
 
 
