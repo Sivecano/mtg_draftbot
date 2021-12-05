@@ -3,6 +3,7 @@ import os
 import json
 import time
 from pathlib import Path
+import math
 
 import matplotlib.image as mpimg
 import pandas as pandas
@@ -53,7 +54,7 @@ def get_urls_from_ids_file(card_id_file_path: str) -> List[str]:
 
 def pngs_as_bytes_to_pdf(pngs: list, out_pdf_path: str):
     with PdfPages(out_pdf_path) as pdf_saver:
-        for page_number in tqdm.tqdm(range(1, len(pngs) // 9 + 2)):
+        for page_number in tqdm.tqdm(range(1, math.ceil(len(pngs) / 9) + 1)):
             fig = plt.figure(figsize=page_size_inch)
             ax = fig.add_axes([0, 0, 1, 1])
             plt.xlim(0, 1)  # page goes from
@@ -83,10 +84,14 @@ def get_pdf_from_id_list(ids_list: List[str], out_file_path: str, side="fronts")
             [url_getter_func(id) for id in ids_list]))
         , out_file_path)
 
-
+def get_pdf_from_uuids(uuids: List[str], file_path : str, front=True):
+    if front:
+        get_pdf_from_id_list([pandas.read_csv("set.csv").query("uuid == @id")["card_id"].values[0] for id in uuids], file_path)
+    else:
+        get_pdf_from_id_list([pandas.read_csv("set.csv").query("uuid == @id")["back_id"].values[0] for id in uuids], file_path, "backs")
 
 if __name__ == "__main__":
     panda_frame = pandas.read_csv('set.csv')
-    #get_pdf_from_id_list(panda_frame['card_id'][:22], 'fronts.pdf')
-    get_pdf_from_id_list(panda_frame['back_id'][:22], 'backs.pdf', "backs")
+    get_pdf_from_id_list(panda_frame['card_id'][:9], 'fronts.pdf')
+    #get_pdf_from_id_list(panda_frame['back_id'][:22], 'backs.pdf', "backs")
 
