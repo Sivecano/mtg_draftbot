@@ -19,7 +19,7 @@ card_size_inch = np.array([2.5, 3.5])
 page_size_inch = np.array([210, 297]) / 25.4
 page_margin_prop = ((page_size_inch % card_size_inch) / 2) / page_size_inch
 card_size_prop = card_size_inch / page_size_inch
-dpi = 1200
+dpi = 600
 
 
 def get_front_image_url_from_id(card_id: str) -> Optional[str]:
@@ -34,6 +34,8 @@ def get_front_image_url_from_id(card_id: str) -> Optional[str]:
 
 def get_back_image_url_from_back_id(card_id: str) -> Optional[str]:
     return f"https://c1.scryfall.com/file/scryfall-card-backs/png/{card_id[:2]}/{card_id}.png"
+
+
 
 
 def gen_pngs_from_urls(image_url_list: List[str]) -> List[Optional[bytes]]:
@@ -73,13 +75,18 @@ def pngs_as_bytes_to_pdf(pngs: list, out_pdf_path: str):
             plt.close()
 
 
-def get_pdf_from_csv(csv_data_path: str, out_file_path: str):
+def get_pdf_from_id_list(ids_list: List[str], out_file_path: str, side="fronts"):
+    url_getter_func = get_front_image_url_from_id if side == "fronts" else \
+        (get_back_image_url_from_back_id if side == "backs" else None)
     pngs_as_bytes_to_pdf(
-        gen_pngs_from_urls(list(pandas.read_csv(csv_data_path)['image']))
+        list(gen_pngs_from_urls(
+            [url_getter_func(id) for id in ids_list]))
         , out_file_path)
 
 
+
 if __name__ == "__main__":
-    pngs_as_bytes_to_pdf(
-        list(gen_pngs_from_urls(list(pandas.read_csv('set.csv')['image'][:22])))
-        , 'out.pdf')
+    panda_frame = pandas.read_csv('set.csv')
+    #get_pdf_from_id_list(panda_frame['card_id'][:22], 'fronts.pdf')
+    get_pdf_from_id_list(panda_frame['back_id'][:22], 'backs.pdf', "backs")
+
