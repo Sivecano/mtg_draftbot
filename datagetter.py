@@ -9,18 +9,19 @@ l = []
 while more:
     with requests.get(url) as req:
         raw = json.loads(req.text)
-    print(raw.keys())
+    # print(raw.keys())
     if (more := raw["has_more"]):
         url = raw["next_page"]
     for i in raw["data"]:
-        l.append({  "uuid"  :   i["oracle_id"], 
-                    "set"   :   i["set"],
-                    "rarity":   i["rarity"],
-                    "image" :   i["image_uris"]["png"],
-                    "colours":  i["colors"],
-                    "mana_cost":i["mana_cost"],
-                    "name"  :   i["name"],
-                    "type"  :   i["type_line"]
+        l.append({  "uuid"      :   i["oracle_id"], 
+                    "set"       :   i["set"],
+                    "rarity"    :   i["rarity"],
+                    "card_id"   :   i["id"],
+                    "back_id"   :   i["card_back_id"],
+                    "colours"   :   i["colors"],
+                    "mana_cost" :   i["mana_cost"],
+                    "name"      :   i["name"],
+                    "type"      :   i["type_line"]
             })
     time.sleep(0.1)
 
