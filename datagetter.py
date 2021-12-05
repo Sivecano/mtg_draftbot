@@ -1,4 +1,4 @@
-import requests, json, os
+import requests, json, os, time
 import pandas
 
 set = "m20" # 2020 core set
@@ -16,12 +16,13 @@ while more:
         l.append({  "uuid"  :   i["oracle_id"], 
                     "set"   :   i["set"],
                     "rarity":   i["rarity"],
-                    "image" :   i["image_uris"]["normal"],
+                    "image" :   i["image_uris"]["png"],
                     "colours":  i["colors"],
                     "mana_cost":i["mana_cost"],
                     "name"  :   i["name"],
                     "type"  :   i["type_line"]
             })
+    time.sleep(0.1)
 
 
 data = pandas.DataFrame(l)
