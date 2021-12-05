@@ -1,5 +1,3 @@
-
-
 class Collection:
     def __init__(self, cards=None):
         if isinstance(cards, list):
@@ -16,6 +14,26 @@ class Collection:
         with open(filename, "w") as file:
             for id in self.data:
                 print(f"{id},{self.data[id]}", file=file)
+
+    def add_card(self, card_id, amount = 1):
+        if card_id in self.data:
+            self.data[card_id] += amount
+        else:
+            self.data[card_id] = amount
+
+    def remove_card(self, card_id, amount=1):
+        if card_id in self.data:
+            if self.data[card_id] > amount:
+                self.data[card_id] -= amount
+            else:
+                del self.data[card_id]
+    
+    def get_amount(self, card_id):
+        if card_id in self.data:
+            return self.data[card_id]
+        return 0
+
+
 
 
 if __name__ == "__main__":
