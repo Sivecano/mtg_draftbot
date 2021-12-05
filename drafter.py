@@ -17,9 +17,13 @@ def draft():
                     mythrares.sample())
                 .uuid)
 
+
 def nameprint(deck):
     for i in set(deck):
         print(deck.count(i), "x", data.query("uuid == @i")["name"].values[0])
+
+def draw(deck):
+    os.system(f"timg -p k --grid=4 {' '.join(map(lambda x : os.path.join('images', x), deck))}")
 
 if __name__ == "__main__":
     print("set statistics:")
@@ -32,5 +36,4 @@ if __name__ == "__main__":
     deck = draft()
     nameprint(deck)
     if "kitty" in os.environ["TERM"].lower():
-        os.system(f"timg -p k --grid=4 {' '.join(map(lambda x : os.path.join('images', x), deck))}")
-
+        draw(deck)
